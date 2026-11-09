@@ -19,7 +19,7 @@ export class RegisterComponent {
   private destroyRef = inject(DestroyRef);
   public onError = false;
 
-  public form = this.fb.group({
+  public form = this.fb.nonNullable.group({
     email: [
       '',
       [
@@ -31,31 +31,31 @@ export class RegisterComponent {
       '',
       [
         Validators.required,
-        Validators.min(3),
-        Validators.max(20)
+        Validators.minLength(3),
+        Validators.maxLength(20)
       ]
     ],
     lastName: [
       '',
       [
         Validators.required,
-        Validators.min(3),
-        Validators.max(20)
+        Validators.minLength(3),
+        Validators.maxLength(20)
       ]
     ],
     password: [
       '',
       [
         Validators.required,
-        Validators.min(3),
-        Validators.max(40)
+        Validators.minLength(3),
+        Validators.maxLength(40)
       ]
     ]
   });
 
 
   public submit(): void {
-    const registerRequest = this.form.value as RegisterRequest;
+    const registerRequest: RegisterRequest = this.form.getRawValue();
     this.authService.register(registerRequest)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

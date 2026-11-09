@@ -25,7 +25,7 @@ export class LoginComponent {
   public hide = true;
   public onError = false;
 
-  public form = this.fb.group({
+  public form = this.fb.nonNullable.group({
     email: [
       '',
       [
@@ -37,13 +37,13 @@ export class LoginComponent {
       '',
       [
         Validators.required,
-        Validators.min(3)
+        Validators.minLength(3)
       ]
     ]
   });
 
   public submit(): void {
-    const loginRequest = this.form.value as LoginRequest;
+    const loginRequest: LoginRequest = this.form.getRawValue();
     this.authService.login(loginRequest)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

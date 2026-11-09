@@ -1,6 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
@@ -27,7 +26,6 @@ export class DetailComponent implements OnInit {
   public userId: string;
 
   private route = inject(ActivatedRoute);
-  private fb = inject(FormBuilder);
   private sessionService = inject(SessionService);
   private sessionApiService = inject(SessionApiService);
   private teacherService = inject(TeacherService);
@@ -36,9 +34,10 @@ export class DetailComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   constructor() {
+    const sessionInformation = this.sessionService.sessionInformation;
     this.sessionId = this.route.snapshot.paramMap.get('id')!;
-    this.isAdmin = this.sessionService.sessionInformation!.admin;
-    this.userId = this.sessionService.sessionInformation!.id.toString();
+    this.isAdmin = sessionInformation?.admin ?? false;
+    this.userId = sessionInformation?.id.toString() ?? '';
   }
 
   ngOnInit(): void {
@@ -80,7 +79,7 @@ export class DetailComponent implements OnInit {
       .pipe(
         switchMap((session: Session) => {
           this.session = session;
-          this.isParticipate = session.users.some(u => u === this.sessionService.sessionInformation!.id);
+          this.isParticipate = session.users.some(u => u === this.sessionService.sessionInformation?.id);
           return this.teacherService.detail(session.teacher_id.toString());
         }),
         takeUntilDestroyed(this.destroyRef)
