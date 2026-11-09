@@ -5,10 +5,12 @@ import { inject } from "@angular/core";
 
 export function customJwtInterceptorFn(request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
   const sessionService = inject(SessionService);
-  if (sessionService.isLogged) {
+  const token = sessionService.sessionInformation?.token;
+
+  if (sessionService.isLogged && token) {
     request = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${sessionService.sessionInformation!.token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
