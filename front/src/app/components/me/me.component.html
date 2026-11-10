@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-title>
       <div fxLayout="row" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="back()">
+        <button mat-icon-button routerLink="/sessions">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <h1>User information</h1>
@@ -20,7 +20,7 @@
               <p>Delete my account:</p>
               <button mat-raised-button color="warn" (click)="delete()">
                 <mat-icon>delete</mat-icon>
-                <span class="ml1">Detail</span>
+                <span class="ml1">Delete</span>
               </button>
             </div>
           }

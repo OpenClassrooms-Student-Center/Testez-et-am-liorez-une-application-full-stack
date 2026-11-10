@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { switchMap } from 'rxjs';
 import { Teacher } from '../../../../core/models/teacher.interface';
 import { SessionService } from '../../../../core/service/session.service';
@@ -13,7 +13,7 @@ import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-detail',
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, RouterModule],
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.scss']
 })
@@ -44,9 +44,6 @@ export class DetailComponent implements OnInit {
     this.fetchSession();
   }
 
-  public back(): void {
-    window.history.back();
-  }
 
   public delete(): void {
     this.sessionApiService
