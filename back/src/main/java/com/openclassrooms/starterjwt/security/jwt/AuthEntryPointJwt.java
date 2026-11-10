@@ -1,19 +1,16 @@
 package com.openclassrooms.starterjwt.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-@Slf4j
+/**
+ * Point d'entrée historique pour les erreurs d'authentification (401).
+ * <p>
+ * L'implémentation {@code AuthenticationEntryPoint} est commentée dans le starter.
+ * En pratique, {@link com.openclassrooms.starterjwt.security.WebSecurityConfig}
+ * utilise un lambda {@code sendError(401)} à la place.
+ * <p>
+ * Classe conservée pour compatibilité avec le code fourni / éventuelle réactivation.
+ */
 @Component
 public class AuthEntryPointJwt { // implements AuthenticationEntryPoint
 //

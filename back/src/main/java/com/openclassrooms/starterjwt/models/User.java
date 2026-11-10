@@ -26,6 +26,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entité JPA représentant un utilisateur (table {@code users}).
+ * <p>
+ * Stockée en base ; convertie en {@code UserDto} pour les réponses API.
+ */
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
@@ -40,31 +45,37 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 public class User {
+    /** Clé primaire auto-incrémentée. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Email unique (sert aussi de username JWT). */
     @NonNull
     @Size(max = 50)
     @Email
     @Column(nullable = false)
     private String email;
 
+    /** Nom de famille. */
     @NonNull
     @Size(max = 20)
     @Column(nullable = false)
     private String lastName;
 
+    /** Prénom. */
     @NonNull
     @Size(max = 20)
     @Column(nullable = false)
     private String firstName;
 
+    /** Mot de passe hashé (BCrypt). */
     @NonNull
     @Size(max = 120)
     @Column(nullable = false)
     private String password;
 
+    /** {@code true} si administrateur. */
     @NonNull
     private boolean admin;
 
