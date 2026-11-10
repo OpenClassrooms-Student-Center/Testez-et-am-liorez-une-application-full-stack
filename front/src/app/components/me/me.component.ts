@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule} from '@angular/router';
 import { User } from '../../core/models/user.interface';
 import { SessionService } from '../../core/service/session.service';
 import { UserService } from '../../core/service/user.service';
@@ -10,7 +10,7 @@ import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-me',
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, RouterModule],
   templateUrl: './me.component.html',
   styleUrls: ['./me.component.scss']
 })
@@ -28,10 +28,6 @@ export class MeComponent implements OnInit {
       .getById(this.sessionService.sessionInformation!.id.toString())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((user: User) => this.user = user);
-  }
-
-  public back(): void {
-    window.history.back();
   }
 
   public delete(): void {
