@@ -23,6 +23,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entité JPA d'un professeur (table {@code teachers}).
+ */
 @Entity
 @Table(name = "teachers")
 @EntityListeners(AuditingEntityListener.class)
@@ -34,15 +37,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 public class Teacher {
+    /** Clé primaire auto-incrémentée. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Nom. */
     @NotBlank
     @Size(max = 20)
     @Column(nullable = false)
     private String lastName;
 
+    /** Prénom. */
     @NotBlank
     @Size(max = 20)
     @Column(nullable = false)

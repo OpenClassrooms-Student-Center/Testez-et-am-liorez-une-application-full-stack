@@ -1,5 +1,6 @@
 package com.openclassrooms.starterjwt.controllers;
 
+import com.openclassrooms.starterjwt.dto.TeacherDto;
 import com.openclassrooms.starterjwt.mapper.TeacherMapper;
 import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.services.TeacherService;
@@ -11,38 +12,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Contrôleur REST des professeurs ({@code /api/teacher}).
+ * <p>
+ * Lecture seule : liste et détail.
+ */
 @RestController
 @RequestMapping("/api/teacher")
 public class TeacherController {
     private final TeacherMapper teacherMapper;
     private final TeacherService teacherService;
 
-
+    /**
+     * @param teacherService service métier teachers
+     * @param teacherMapper  conversion Teacher ↔ TeacherDto
+     */
     public TeacherController(TeacherService teacherService,
                              TeacherMapper teacherMapper) {
         this.teacherMapper = teacherMapper;
         this.teacherService = teacherService;
     }
 
+    /**
+     * Récupère un professeur par id.
+     *
+     * @param id identifiant du teacher
+     * @return {@link TeacherDto}
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable("id") String id) {
-        try {
-            Teacher teacher = this.teacherService.findById(Long.valueOf(id));
-
-            if (teacher == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok().body(this.teacherMapper.toDto(teacher));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<TeacherDto> findById(@PathVariable("id") String id) {
+        Teacher teacher = this.teacherService.getById(Long.valueOf(id));
+        return ResponseEntity.ok().body(this.teacherMapper.toDto(teacher));
     }
 
+    /**
+     * Liste tous les professeurs.
+     *
+     * @return liste de {@link TeacherDto}
+     */
     @GetMapping()
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<List<TeacherDto>> findAll() {
         List<Teacher> teachers = this.teacherService.findAll();
-
         return ResponseEntity.ok().body(this.teacherMapper.toDto(teachers));
     }
 }

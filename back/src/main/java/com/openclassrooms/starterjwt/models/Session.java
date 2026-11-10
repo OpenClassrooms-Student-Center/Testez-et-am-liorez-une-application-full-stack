@@ -31,6 +31,15 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Entité JPA d'une session de yoga (table {@code sessions}).
+ * <p>
+ * Relations :
+ * <ul>
+ *   <li>{@link Teacher} en {@code @OneToOne} via {@code teacher_id} (contrainte UNIQUE actuelle)</li>
+ *   <li>Participants {@link User} en {@code @ManyToMany} via la table {@code PARTICIPATE}</li>
+ * </ul>
+ */
 @Entity
 @Table(name = "sessions")
 @EntityListeners(AuditingEntityListener.class)
@@ -42,28 +51,34 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class Session {
+    /** Clé primaire auto-incrémentée. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Nom de la session. */
     @NotBlank
     @Size(max = 50)
     @Column(nullable = false)
     private String name;
 
+    /** Date de la séance. */
     @NotNull
     @Column(nullable = false)
     private Date date;
 
+    /** Description. */
     @NotNull
     @Size(max = 2500)
     @Column(nullable = false)
     private String description;
 
+    /** Professeur associé (OneToOne → un teacher ne peut être lié qu'à une session). */
     @OneToOne
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 
+    /** Utilisateurs inscrits à la session. */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "PARTICIPATE",

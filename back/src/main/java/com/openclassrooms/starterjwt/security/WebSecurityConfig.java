@@ -19,28 +19,56 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration Spring Security de l'application.
+ * <p>
+ * Définit : CSRF/CORS off, session STATELESS, endpoints publics {@code /api/auth/**},
+ * le reste authentifié par JWT via {@link AuthTokenFilter}.
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    /** Service qui charge l'utilisateur pour l'auth (email → UserDetails). */
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Expose l'{@link AuthenticationManager} utilisé au login.
+     *
+     * @param authConfig configuration d'authentification Spring
+     * @return le manager d'authentification
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Filtre JWT exécuté avant l'auth username/password classique.
+     *
+     * @return instance du filtre {@link AuthTokenFilter}
+     */
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
 
 
+    /**
+     * Encodeur de mots de passe (BCrypt).
+     *
+     * @return {@link BCryptPasswordEncoder}
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provider d'authentification basé sur {@link UserDetailsServiceImpl} + BCrypt.
+     *
+     * @return le {@link DaoAuthenticationProvider} configuré
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -49,6 +77,12 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Chaîne de filtres de sécurité : règles d'accès + JWT + gestion 401.
+     *
+     * @param http builder HttpSecurity Spring
+     * @return la chaîne de filtres
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

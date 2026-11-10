@@ -14,6 +14,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * Utilitaire JWT : génération, lecture et validation des tokens.
+ * <p>
+ * Le secret et la durée de vie viennent de {@code application.yml}
+ * ({@code oc.app.jwtSecret} / {@code oc.app.jwtExpirationMs}).
+ */
 @Slf4j
 @Component
 public class JwtUtils {
@@ -23,6 +29,14 @@ public class JwtUtils {
     @Value("${oc.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    /**
+     * Génère un JWT signé pour l'utilisateur authentifié.
+     * <p>
+     * Le subject du token est l'email (username).
+     *
+     * @param authentication résultat de l'authentification Spring Security
+     * @return token JWT compact (string)
+     */
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -35,10 +49,22 @@ public class JwtUtils {
                 .compact();
     }
 
+    /**
+     * Extrait l'email (subject) contenu dans le token.
+     *
+     * @param token JWT
+     * @return email / username
+     */
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * Vérifie que le token est bien formé, signé et non expiré.
+     *
+     * @param authToken JWT à valider
+     * @return {@code true} si valide, sinon {@code false}
+     */
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);

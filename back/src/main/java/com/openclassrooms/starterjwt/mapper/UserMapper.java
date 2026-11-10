@@ -5,6 +5,11 @@ import com.openclassrooms.starterjwt.models.User;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper MapStruct entre {@link UserDto} et {@link User}.
+ * <p>
+ * Le code d'implémentation est généré à la compilation.
+ */
 @Component
 @Mapper(componentModel = "spring")
 public interface UserMapper extends EntityMapper<UserDto, User> {

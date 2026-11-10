@@ -16,23 +16,47 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Mapper MapStruct entre {@link SessionDto} et {@link Session}.
+ * <p>
+ * Plus complexe que User/Teacher car :
+ * <ul>
+ *   <li>{@code teacher_id} (Long dans le DTO) ↔ objet {@code Teacher} (entité)</li>
+ *   <li>{@code users} (liste d'ids) ↔ liste d'entités {@code User}</li>
+ * </ul>
+ */
 @Component
 @Mapper(componentModel = "spring", uses = {UserService.class}, imports = {Arrays.class, Collectors.class, Session.class, User.class, Collections.class, Optional.class})
 public abstract class SessionMapper implements EntityMapper<SessionDto, Session> {
 
+    /** Service utilisé pour résoudre le professeur à partir de {@code teacher_id}. */
     @Autowired
     TeacherService teacherService;
+
+    /** Service utilisé pour résoudre les participants à partir de leurs ids. */
     @Autowired
     UserService userService;
 
+    /**
+     * DTO → Entity : reconstruit le teacher et la liste des users.
+     *
+     * @param sessionDto données reçues de l'API
+     * @return entité Session
+     */
     @Mappings({
             @Mapping(source = "description", target = "description"),
-            @Mapping(target = "teacher", expression = "java(sessionDto.getTeacher_id() != null ? this.teacherService.findById(sessionDto.getTeacher_id()) : null)"),
-            @Mapping(target = "users", expression = "java(Optional.ofNullable(sessionDto.getUsers()).orElseGet(Collections::emptyList).stream().map(user_id -> { User user = this.userService.findById(user_id); if (user != null) { return user; } return null; }).collect(Collectors.toList()))"),
+            @Mapping(target = "teacher", expression = "java(sessionDto.getTeacher_id() != null ? this.teacherService.findById(sessionDto.getTeacher_id()).orElse(null) : null)"),
+            @Mapping(target = "users", expression = "java(Optional.ofNullable(sessionDto.getUsers()).orElseGet(Collections::emptyList).stream().map(user_id -> this.userService.findById(user_id).orElse(null)).collect(Collectors.toList()))"),
     })
     public abstract Session toEntity(SessionDto sessionDto);
 
 
+    /**
+     * Entity → DTO : expose {@code teacher_id} et la liste des ids users.
+     *
+     * @param session entité issue de la BDD
+     * @return DTO pour la réponse API
+     */
     @Mappings({
             @Mapping(source = "description", target = "description"),
             @Mapping(source = "session.teacher.id", target = "teacher_id"),

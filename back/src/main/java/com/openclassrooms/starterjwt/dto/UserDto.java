@@ -10,6 +10,11 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO utilisateur renvoyé par l'API.
+ * <p>
+ * Le mot de passe est annoté {@link JsonIgnore} pour ne jamais partir dans le JSON.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,9 +34,11 @@ public class UserDto {
     @Size(max = 20)
     private String firstName;
 
+    /** {@code true} si compte administrateur. */
     @NonNull
     private boolean admin;
 
+    /** Jamais sérialisé dans les réponses JSON. */
     @JsonIgnore
     @Size(max = 120)
     private String password;

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO d'un professeur (teacher) pour l'API.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
